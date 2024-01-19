@@ -17,10 +17,11 @@
 // 2) Прочитать и описать ключевые особенности "HTTP" Версии 3.0
 
 // 3) Прочитать про способы отмены запроса, включая объект "AbortController"
-//* AbortController -это объект, который позволяет управлять отменой
+//* Fetch API с AbortController
+// AbortController - это объект, который позволяет управлять отменой
 // http запросов со стороны фронтенда
 // https://developer.mozilla.org/ru/docs/Web/API/AbortController
-// Сначала мы создаём контроллер с помощью конструктора AbortController(),
+// Создаём контроллер с помощью конструктора AbortController(),
 // а затем получаем ссылку на связанный объект AbortSignal
 // используя свойство AbortController.signal.
 
@@ -30,29 +31,74 @@
 // и позволяет нам прервать его, вызвав AbortController.abort(),
 // как показано ниже во втором обработчике событий.
 
-var controller = new AbortController();
-var signal = controller.signal;
+const controller = new AbortController();
+const signal = controller.signal;
 
-var downloadBtn = document.querySelector('.download');
-var abortBtn = document.querySelector('.abort');
+const downloadBtn = document.querySelector('.download');
+const abortBtn = document.querySelector('.abort');
 
 downloadBtn.addEventListener('click', fetchVideo);
 
 abortBtn.addEventListener('click', function () {
-  controller.abort();
+  controller.abort(); // Для отмены запроса
   console.log('Загрузка прервана');
 });
 
 function fetchVideo() {
   // ...
   fetch(url, { signal })
-    .then(function (response) {
-      // ...
+    .then((response) => {
+      //...
     })
-    .catch(function (e) {
-      reports.textContent = 'Ошибка загрузки: ' + e.message;
+    .catch((error) => {
+      if (error.name === 'AbortError') {
+        console.log('Запрос отменен');
+      } else {
+        console.log('Произошла ошибка', error);
+      }
     });
 }
+
+// * XMLHttpRequest с помощью метода abort()
+// отправим запрос и затем вызвать метод abort(), чтобы отменить его
+
+const xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
+
+xhr.onreadystatechange = function () {
+  if (xhr.readyState === 4) {
+    if (xhr.status === 200) {
+      // ...
+    } else {
+      console.log('Произошла ошибка', xhr.status);
+    }
+  }
+};
+
+xhr.abort(); // Для отмены запроса
+
+// * axios с помощью функции CancelToken.
+// создать экземпляр CancelToken и передать его в опции запроса.
+// Затем, для отмены запроса, вызвать метод cancel() на объекте CancelToken.
+
+import axios from 'axios';
+
+const source = axios.CancelToken.source();
+
+axios
+  .get(url, { cancelToken: source.token })
+  .then((response) => {
+    // ...
+  })
+  .catch((error) => {
+    if (axios.isCancel(error)) {
+      console.log('Запрос отменен', error.message);
+    } else {
+      console.log('Произошла ошибка', error);
+    }
+  });
+
+source.cancel('Отменено пользователем'); // Для отмены запроса
 
 // ----------------------------------------
 // 4) Написать по 2 примера создания примитивных значений
