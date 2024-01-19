@@ -4,9 +4,12 @@
 
 // 3) Прочитать про способы отмены запроса, включая объект "AbortController"
 
-// 3) Написать по 2 примера создания примитивных значений (если есть несколько способов - использовать) (string, number, boolean, null, undefined, symbol, bigInt)
+// ----------------------------------------
+// 4) Написать по 2 примера создания примитивных значений (если есть несколько способов - использовать) (string, number, boolean, null, undefined, symbol, bigInt)
 
-const getType = (arr) => arr.forEach((el) => console.log(typeof el));
+const getType = (...arr) =>
+  arr && arr.flat().forEach((el) => console.log(typeof el));
+
 // string:
 const str = 'hi';
 const arrStr = [
@@ -29,7 +32,6 @@ const arrNum = [
   parseInt('789aaa'),
   parseFloat('3.14pi'),
   Math.random(),
-  1 / 'h',
 ];
 
 getType(arrNum);
@@ -50,21 +52,32 @@ const arrBool = [
 getType(arrBool);
 
 // null:
+const x = null;
+const returnNull = () => null;
+
+getType(x, returnNull()); //object object т к typeof null возвращает object по историческим причинам
 
 // undefined:
 let a;
 function foo() {}
 const obj = { a: 2 };
-console.log(a, foo(), obj.b);
+
+getType(a, foo(), obj.b);
 
 // symbol;
-// bigInt;
+getType(Symbol('id'), Symbol.for('key'));
 
-// 4) Почему, если обратиться к переменным созданным через let, const до их объявления - мы получаем ReferenceError?
+// bigInt;
+const bigint = [1n, BigInt('1'), BigInt(1)];
+
+getType(bigint);
+
+// ----------------------------------------
+// 5) Почему, если обратиться к переменным созданным через let, const до их объявления - мы получаем ReferenceError?
 // Т к в JavaScript существует концепция "временной мертвой зоны" и в ней переменные уже существуют, но не могут быть использованы до момента их объявления.
 
-// 5) Решить:
-
+// ----------------------------------------
+// 6) Решить:
 const res = 'B' + 'a' + (1 - 'hello');
 console.log(res); //BaNaN
 
