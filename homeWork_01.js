@@ -140,7 +140,7 @@ const str = 'hi';
 const arrStr = [
   'aaaa',
   String(123),
-  {}.toString(),
+  (1).toString(),
   `Oh, ${str}!`,
   (123.45).toFixed(1),
   1 + '0',
