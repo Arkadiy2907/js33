@@ -66,6 +66,7 @@ class Counter3 {
 }
 
 const counter3 = new Counter3();
+
 console.log(counter3.count); //0
 counter3.increment();
 console.log(counter3.count); //1
@@ -128,7 +129,10 @@ console.log(counterCopy4); //{ count: 0, increment: [Function: increment] }
 
 // 5) Object.create
 const counterCopy5 = Object.create(counter);
-console.log(counterCopy5); //{ count: 0, increment: [Function: increment] }
+console.log(counterCopy5); //{} т к свойства находятся в прототипе
+console.log(counterCopy5.count); // 0
+counterCopy5.increment();
+console.log(counterCopy5.count); // 1
 
 // 6) Object.fromEntries() и Object.entries()
 const counterCopy6 = Object.fromEntries(Object.entries(counter));
