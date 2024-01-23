@@ -37,6 +37,8 @@ const counter1 = {
   },
 };
 
+console.log(counter1); //{ count: 0, increment: [Function: increment] }
+
 // 2) Функция-конструктор
 function Counter2() {
   this.count = 0;
@@ -46,6 +48,11 @@ function Counter2() {
 }
 
 const counter2 = new Counter2();
+
+console.log(counter2); //{ count: 0, increment: [Function: increment] }
+console.log(counter2.count); //0
+counter2.increment();
+console.log(counter2.count); //1
 
 // 3) Класс
 class Counter3 {
@@ -59,6 +66,9 @@ class Counter3 {
 }
 
 const counter3 = new Counter3();
+console.log(counter3.count); //0
+counter3.increment();
+console.log(counter3.count); //1
 
 // 4) Object.create()
 const counterProto4 = {
@@ -69,6 +79,9 @@ const counterProto4 = {
 };
 
 const counter4 = Object.create(counterProto4);
+console.log(counter4.count); //0
+counter4.increment();
+console.log(counter4.count); //1
 
 // 5) Object.assign()
 const counter5 = Object.assign(
@@ -81,73 +94,26 @@ const counter5 = Object.assign(
   }
 );
 
-// 6) Object.setPrototypeOf()
-const counterProto6 = {
+console.log(counter5); //{ count: 0, increment: [Function: increment] }
+
+// ---------------------------------------------------
+// Задание 2 – Скопировать объект counter всеми
+// возможными способами;
+
+const counter = {
   count: 0,
   increment: function () {
     this.count++;
   },
 };
 
-const counter6 = {};
-Object.setPrototypeOf(counter, counterProto6);
-
-// 7) Spread
-const counter7 = {
-  ...{
-    count: 0,
-    increment: function () {
-      this.count++;
-    },
-  },
-};
-
-// 8) геттер сеттер
-class Counter8 {
-  constructor() {
-    this._count = 0;
-  }
-  get count() {
-    return this._count;
-  }
-  set count(value) {
-    this._count = value;
-  }
-  increment() {
-    this._count++;
-  }
-}
-
-const counter8 = new Counter8();
-
-// 9) с дескрипторами свойств
-const counterPrototype9 = Object.create(
-  {},
-  {
-    count: {
-      value: 0,
-      writable: true,
-    },
-    increment: {
-      value: function () {
-        this.count++;
-      },
-      enumerable: true,
-    },
-  }
-);
-
-const counter9 = Object.create(counterPrototype9);
-
-// ---------------------------------------------------
-// Задание 2 – Скопировать объект counter всеми
-// возможными способами;
-
 // 1) Object.assign()
 const counterCopy1 = Object.assign({}, counter);
+console.log(counterCopy1); //{ count: 0, increment: [Function: increment] }
 
 // 2) spread
 const counterCopy2 = { ...counter };
+console.log(counterCopy2); //{ count: 0, increment: [Function: increment] }
 
 // 3) JSON -скопированные ф-и могут работать не верно!
 const counterCopy3 = JSON.parse(JSON.stringify(counter));
@@ -158,17 +124,17 @@ const counterCopy4 = {};
 for (let i in counter) {
   counterCopy4[i] = counter[i];
 }
+console.log(counterCopy4); //{ count: 0, increment: [Function: increment] }
 
 // 5) Object.create
 const counterCopy5 = Object.create(counter);
+console.log(counterCopy5); //{ count: 0, increment: [Function: increment] }
 
 // 6) Object.fromEntries() и Object.entries()
 const counterCopy6 = Object.fromEntries(Object.entries(counter));
+console.log(counterCopy6); //{ count: 0, increment: [Function: increment] }
 
-// 7) через библиотеку Lodash - глубокое копирование
-const counterCopy7 = _.cloneDeep(counter);
-
-// 8) делал на предыдущей учебе
+// 7) делал на предыдущей учебе
 const deepCopy = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
@@ -184,6 +150,18 @@ const deepCopy = (obj) => {
 
   return copy;
 };
+console.log(deepCopy(counter)); //{ count: 0, increment: [Function: increment] }
+
+// 8) structuredClone новый метод глубокого клонирования но без функций
+
+const counterCopy8 = structuredClone({ a: { s: { d: 4 } } });
+console.log(counterCopy8); //{ a: { s: { d: 4 } } }
+
+// const counterCopyNoFunction = structuredClone(counter);//could not be cloned
+
+// 9) через библиотеку Lodash - глубокое копирование
+const counterCopy9 = _.cloneDeep(counter);
+
 // ---------------------------------------------------
 // Задание 3 – Создать функцию makeCounter всеми описанными и возможными способами;
 
