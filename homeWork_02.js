@@ -101,12 +101,30 @@ console.log(counter5); //{ count: 0, increment: [Function: increment] }
 // Задание 2 – Скопировать объект counter всеми
 // возможными способами;
 
-const counter = {
-  count: 0,
-  increment: function () {
+// const counter = {
+//   count: 0,
+//   increment: function () {
+//     this.count++;
+//   },
+// };
+
+const counter = {};
+
+Object.defineProperty(counter, 'count', {
+  value: 0,
+  writable: true, // свойство может быть изменено
+  enumerable: true, // свойство будет перечисляемым при итерации
+  configurable: true, // свойство может быть удалено и его дескриптор может быть изменен
+});
+
+Object.defineProperty(counter, 'increment', {
+  value: function () {
     this.count++;
   },
-};
+  writable: false, // метод не может быть изменен
+  enumerable: true, // метод будет перечисляемым при итерации
+  configurable: false, // метод не может быть удален или его дескриптор изменен
+});
 
 // 1) Object.assign()
 const counterCopy1 = Object.assign({}, counter);
@@ -119,7 +137,7 @@ console.log(counterCopy2); //{ count: 0, increment: [Function: increment] }
 // 3) JSON -скопированные ф-и могут работать не верно!
 const counterCopy3 = JSON.parse(JSON.stringify(counter));
 
-// 4) for
+// 4) for но не копирует флаги и дескрипторы свойств
 const counterCopy4 = {};
 
 for (let i in counter) {
@@ -136,9 +154,22 @@ console.log(counterCopy5.count); // 1
 
 // 6) Object.fromEntries() и Object.entries()
 const counterCopy6 = Object.fromEntries(Object.entries(counter));
-console.log(counterCopy6); //{ count: 0, increment: [Function: increment] }
+console.log('entries', counterCopy6); //{ count: 0, increment: [Function: increment] }
 
-// 7) делал на предыдущей учебе
+// 7) defineProperties getOwnPropertyDescriptors клонирует с дескрипторами
+
+const counterCopy7 = Object.defineProperties(
+  {},
+  Object.getOwnPropertyDescriptors(counter)
+);
+
+console.log('getOwnPropertyDescriptors', counterCopy7); //{ count: 0, increment: [Function: increment] }
+console.log(
+  'getOwnPropertyDescriptors',
+  Object.getOwnPropertyDescriptor(counterCopy7, 'increment')
+); //value: [Function: value], writable: false, enumerable: true, configurable: false
+
+// 8) делал на предыдущей учебе
 const deepCopy = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
@@ -154,17 +185,17 @@ const deepCopy = (obj) => {
 
   return copy;
 };
-console.log(deepCopy(counter)); //{ count: 0, increment: [Function: increment] }
+console.log('my deepCopy', deepCopy(counter)); //{ count: 0, increment: [Function: increment] }
 
-// 8) structuredClone новый метод глубокого клонирования но без функций
+// 9) structuredClone новый метод глубокого клонирования но без функций
 
-const counterCopy8 = structuredClone({ a: { s: { d: 4 } } });
-console.log(counterCopy8); //{ a: { s: { d: 4 } } }
+const counterCopy9 = structuredClone({ a: { s: { d: 4 } } });
+console.log(counterCopy9); //{ a: { s: { d: 4 } } }
 
 // const counterCopyNoFunction = structuredClone(counter);//could not be cloned
 
-// 9) через библиотеку Lodash - глубокое копирование
-const counterCopy9 = _.cloneDeep(counter);
+// 10) через библиотеку Lodash - глубокое копирование
+const counterCopyLodash = _.cloneDeep(counter);
 
 // ---------------------------------------------------
 // Задание 3 – Создать функцию makeCounter всеми описанными и возможными способами;
