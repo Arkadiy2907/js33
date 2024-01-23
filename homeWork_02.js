@@ -263,15 +263,15 @@ const reverseStr3 = (str) =>
 // бонус для развлечения))
 
 const reverseStr4 = (str) => {
+  if (!str || typeof str !== 'string') return 'no work';
+  if (str.length === 1) return 'small string';
+
   let res = '';
-  if (str && typeof str === 'string') {
-    for (let i = str.length - 1; i >= 0; i--) {
-      res += str[i];
-    }
-    return res;
-  } else {
-    return 'no work';
+
+  for (let i = str.length - 1; i >= 0; i--) {
+    res += str[i];
   }
+  return res;
 };
 
 console.log(reverseStr1('')); //no work
