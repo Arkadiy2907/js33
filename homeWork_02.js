@@ -101,13 +101,6 @@ console.log(counter5); //{ count: 0, increment: [Function: increment] }
 // Задание 2 – Скопировать объект counter всеми
 // возможными способами;
 
-// const counter = {
-//   count: 0,
-//   increment: function () {
-//     this.count++;
-//   },
-// };
-
 const counter = {};
 
 Object.defineProperty(counter, 'count', {
@@ -221,9 +214,6 @@ function makeCounter(f) {
 const obj1 = { here: { is: 'on', other: '3' }, object: 'Y' };
 
 const obj2 = { here: { is: 'on', other: '2' }, object: 'Y' };
-
-// const deepEqual =
-// (obj1, obj2) => {};
 
 const deepEqual = (obj1, obj2) => {
   if (typeof obj1 === 'object' && typeof obj2 === 'object') {
