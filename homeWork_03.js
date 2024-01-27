@@ -30,16 +30,24 @@
 
 const obj = { item: 'some value' };
 
+const obj1 = { item: 'some value1' }; //для проверки двойного bind и call
+const obj2 = { item: 'some value2' }; //для проверки двойного bind и call
+
 function logger() {
   console.log(`I output only external context: ${this.item}`);
 }
 
-const getValue = logger.bind(obj);
-
-getValue(); //I output only external context: some value
-
+logger.bind(obj)(); //I output only external context: some value
 logger.call(obj); //I output only external context: some value
 logger.apply(obj); //I output only external context: some value
+
+//бонус двойной вызов с bind и call
+
+const getValue = logger.bind(obj).bind(obj1); //второй bind не сработает
+getValue(); //I output only external context: some value
+
+logger.bind(obj).bind(obj1).call(obj2); //I output only external context: some value
+//второй bind не сработает call только сделает вызов значения с первого bind
 
 // ---------------------------------------------------
 // Бонус задание: Реализовать полифил
@@ -61,9 +69,11 @@ const user = {
   name: 'Den',
 };
 
+const getMassage1 = 'no function';
+
 function getMassage(st) {
   console.log(`${st}`, this.name);
 }
 
-const massage = bind(getMassage, user);
-massage('hi');
+bind(getMassage, user, 'hi')(); //hi Den
+bind(getMassage1, user, 'hi')(); //TypeError: is not a function
