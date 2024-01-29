@@ -30,23 +30,54 @@
 
 const obj = { item: 'some value' };
 
-const obj1 = { item: 'some value1' }; //для проверки двойного bind и call
-const obj2 = { item: 'some value2' }; //для проверки двойного bind и call
-
 function logger() {
   console.log(`I output only external context: ${this.item}`);
 }
 
+//явная привязка-------------------
 logger.bind(obj)(); //I output only external context: some value
 logger.call(obj); //I output only external context: some value
 logger.apply(obj); //I output only external context: some value
 
-//бонус двойной вызов с bind и call
+//неявная привязка-------------------
+function logger1() {
+  console.log(`I output only external context: ${this.item}`);
+}
 
-const getValue = logger.bind(obj).bind(obj1); //второй bind не сработает
+const obj1 = { item: 'some value' };
+
+obj1.logger1 = logger1;
+obj1.logger1(); //I output only external context: some value
+
+// по умолчанию-------------------
+function logger2() {
+  console.log(`I output only external context: ${this.item}`);
+}
+
+var item = 'some value';
+logger2(); //I output only external context: some value
+
+// с new-------------------
+function Logger3(item) {
+  this.item = item;
+}
+
+const logger3 = new Logger3('I output only external context: some value');
+console.log(logger3.item); //'I output only external context: some value'
+
+//бонус двойной вызов с bind и call-------
+function loggerBonus() {
+  console.log(`I output only external context: ${this.item}`);
+}
+
+const objBonus = { item: 'some value' };
+const objBonus1 = { item: 'some value1' }; //для проверки двойного bind и call
+const objBonus2 = { item: 'some value2' }; //для проверки двойного bind и call
+
+const getValue = loggerBonus.bind(objBonus).bind(objBonus1); //второй bind не сработает
 getValue(); //I output only external context: some value
 
-logger.bind(obj).bind(obj1).call(obj2); //I output only external context: some value
+loggerBonus.bind(objBonus).bind(objBonus1).call(objBonus2); //I output only external context: some value
 //второй bind не сработает call только сделает вызов значения с первого bind
 
 // ---------------------------------------------------
