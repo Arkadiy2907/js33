@@ -24,43 +24,39 @@
 
 // 1) Какие бывают алгоритмы сортировок ?
 
-// Selection sort (сортировка выбором) – делается проход по массиву от начала до конца в поиске минимального элемента массива и перемещении его в начало. Сложность O(n^2).
+// Сортировка выбором – делается проход по массиву от начала до конца в поиске минимального элемента массива и перемещении его в начало. Сложность O(n^2).
 
-function selectionSort(arr) {
-  for (let j = 0; j < arr.length - 1; j++) {
-    let max = -Infinity;
-    let index = null;
+const selectedSort = (arr) => {
+  for (let i = 0; i < arr.length; i++) {
+    let min = i;
 
-    for (let i = 0; i < arr.length - j; i++) {
-      if (max < arr[i]) {
-        max = arr[i];
-        index = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[min] > arr[j]) {
+        min = j;
       }
     }
 
-    let buf = arr[arr.length - 1 - j];
-    arr[arr.length - 1 - j] = max;
-    arr[index] = buf;
+    [arr[i], arr[min]] = [arr[min], arr[i]];
   }
 
   return arr;
-}
+};
 
-// Bubble sort (сортировка пузырьком) – алгоритм меняет местами два соседних элемента, если первый элемент массива больше второго. Так происходит до тех пор, пока алгоритм не обменяет местами все неотсортированные элементы. Сложность O(n^2).
+console.log(selectedSort([2, 1, 3, 7, 5]));
 
-function bubbleSort(arr) {
+// Сортировка пузырьком – алгоритм меняет местами два соседних элемента, если первый элемент массива больше второго. Так происходит до тех пор, пока алгоритм не обменяет местами все неотсортированные элементы. Сложность O(n^2).
+
+const bubbleSort = (arr) => {
   for (let n = 0; n < arr.length; n++) {
     for (let i = 0; i < arr.length - 1 - n; i++) {
       if (arr[i] > arr[i + 1]) {
-        const buf = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = buf;
+        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
       }
     }
   }
 
   return arr;
-}
+};
 
 // Сортировка вставками - разбиваем массив на отсортированную и неотсортированную части. Берём элемент из неотсортированной и вставляем его на своё место в отсортированную часть массива. Алгоритм работает до тех пор, пока в неотсортированной части есть элементы. Сложность O(n^2)
 
@@ -106,18 +102,44 @@ const isCheckArg = (arr, total) => {
 
 const firstSum = (arr, total) => {
   isCheckArg(arr, total);
-  let res = [];
 
   for (let i = 0; i < arr.length - 1; i++) {
     for (let j = i + 1; j < arr.length; j++) {
       if (arr[j] + arr[i] === total) {
-        res = [arr[i], arr[j]];
-        return res;
+        return [arr[i], arr[j]];
       }
     }
   }
 
-  return res.length !== 0 ? res : 'please change arg';
+  return 'please change arg';
 };
 
 console.log(firstSum(arr, total)); // [4, 9]
+
+//сложность O((n log n) с использованием метода sort.
+// если же массив изначально отсортирован
+// то для алгоритма "Два указателя"(Two Pointers) сложность O(n)
+
+const firstSum1 = (arr, total) => {
+  isCheckArg(arr, total);
+
+  arr.sort((a, b) => a - b);
+
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    const sum = arr[left] + arr[right];
+    if (sum === total) {
+      return [arr[left], arr[right]];
+    } else if (sum < total) {
+      left++;
+    } else {
+      right--;
+    }
+  }
+
+  return 'please change arg';
+};
+
+console.log(firstSum1(arr, total)); // [ 4, 9 ]
