@@ -213,6 +213,7 @@ const isCheckArg = (arr, total) => {
 
 const firstSum = (arr, total) => {
   isCheckArg(arr, total);
+  arr = arr.slice();
 
   for (let i = 0; i < arr.length - 1; i++) {
     for (let j = i + 1; j < arr.length; j++) {
@@ -233,6 +234,7 @@ console.log(firstSum(arr, total)); // [4, 9]
 
 const firstSum1 = (arr, total) => {
   isCheckArg(arr, total);
+  arr = arr.slice();
 
   arr.sort((a, b) => a - b);
 
