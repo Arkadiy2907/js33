@@ -211,9 +211,9 @@ const isCheckArg = (arr, total) => {
 
 //решение "в лоб". Сложность O(n^2)
 
-const firstSum = (arr, total) => {
-  isCheckArg(arr, total);
-  arr = arr.slice();
+const firstSum = (array, total) => {
+  isCheckArg(array, total);
+  const arr = array.slice();
 
   for (let i = 0; i < arr.length - 1; i++) {
     for (let j = i + 1; j < arr.length; j++) {
@@ -232,9 +232,9 @@ console.log(firstSum(arr, total)); // [4, 9]
 // если же массив изначально отсортирован
 // то для алгоритма "Два указателя"(Two Pointers) сложность O(n)
 
-const firstSum1 = (arr, total) => {
-  isCheckArg(arr, total);
-  arr = arr.slice();
+const firstSum1 = (array, total) => {
+  isCheckArg(array, total);
+  const arr = array.slice();
 
   arr.sort((a, b) => a - b);
 
