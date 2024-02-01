@@ -112,19 +112,73 @@ doSmth()
 // 3) Напишите функцию, которая будет проходить через массив целых чисел и выводить индекс каждого элемента с задержкой в 3 секунды.
 // Входные данные: [10, 12, 15, 21]
 
-const array = [10, 12, 15, 21];
+// 1 вариант
+const array1 = [10, 12, 15, 21];
 
-const getIdxArr = (arr) => {
-  if (typeof arr !== 'object' || !Array.isArray(arr) || array.length === 0) {
+const getIdxArr1 = (arr) => {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return 'bad args';
+  }
+
+  for (let i = 0; i < arr.length; i++) {
+    setTimeout(() => console.log(i), 3000 * (i + 1));
+  }
+};
+
+getIdxArr1(array1);
+
+// -------
+// 2 вариант var
+const array2 = [10, 12, 15, 21];
+
+const getIdxArr2 = (arr) => {
+  if (!Array.isArray(arr) || arr.length === 0) {
     return 'bad args';
   }
 
   for (var i = 0; i < arr.length; i++) {
-    ((i) => setTimeout(() => console.log(i), 3000))(i);
+    ((i) => setTimeout(() => console.log(i), 3000 * (i + 1)))(i);
   }
 };
 
-getIdxArr(array);
+getIdxArr2(array2);
+
+//-------
+// 3 вариант forEach
+const array3 = [10, 12, 15, 21];
+
+const getIdxArr3 = (arr) => {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return 'bad args';
+  }
+
+  arr.forEach((_, idx) => {
+    setTimeout(() => {
+      console.log(idx);
+    }, 3000 * (idx + 1));
+  });
+};
+
+getIdxArr3(array3);
+
+//-------
+// 4 вариант рекурсивно
+const array4 = [10, 12, 15, 21];
+
+const getIdxArr4 = (arr, idx = 0) => {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return 'bad args';
+  }
+
+  if (idx < arr.length) {
+    console.log(idx);
+    setTimeout(() => {
+      getIdxArr4(arr, idx + 1);
+    }, 3000);
+  }
+};
+
+getIdxArr4(array4);
 
 // ---------------------------------------------------
 // 4) Прочитать про Top Level Await (можно ли использовать await вне функции async)
