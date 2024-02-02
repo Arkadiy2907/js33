@@ -75,7 +75,7 @@ promiseTwo
     return res + '!!!!!!!'; //не влияет
   })
   .catch((res) => {
-    return res + 'd'; //ошибок нет
+    return res + 'd'; //ошибок нет потому не сработает
   })
   .then((res) => {
     console.log(res); //abc
@@ -112,45 +112,43 @@ doSmth()
 // 3) Напишите функцию, которая будет проходить через массив целых чисел и выводить индекс каждого элемента с задержкой в 3 секунды.
 // Входные данные: [10, 12, 15, 21]
 
-// 1 вариант
-const array1 = [10, 12, 15, 21];
+const array = [10, 12, 15, 21];
+
+const isArrayArg = (arr) => {
+  if (!Array.isArray(arr) || arr.length === 0)
+    throw new TypeError('bad arguments: arr');
+};
+
+// 1 вариант 'что пришло первое'
 
 const getIdxArr1 = (arr) => {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    return 'bad args';
-  }
+  isArrayArg(arr);
 
   for (let i = 0; i < arr.length; i++) {
     setTimeout(() => console.log(i), 3000 * (i + 1));
   }
 };
 
-getIdxArr1(array1);
+getIdxArr1(array);
 
 // -------
 // 2 вариант var
-const array2 = [10, 12, 15, 21];
 
 const getIdxArr2 = (arr) => {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    return 'bad args';
-  }
+  isArrayArg(arr);
 
   for (var i = 0; i < arr.length; i++) {
     ((i) => setTimeout(() => console.log(i), 3000 * (i + 1)))(i);
   }
 };
 
-getIdxArr2(array2);
+getIdxArr2(array);
 
 //-------
 // 3 вариант forEach
-const array3 = [10, 12, 15, 21];
 
 const getIdxArr3 = (arr) => {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    return 'bad args';
-  }
+  isArrayArg(arr);
 
   arr.forEach((_, idx) => {
     setTimeout(() => {
@@ -159,16 +157,14 @@ const getIdxArr3 = (arr) => {
   });
 };
 
-getIdxArr3(array3);
+getIdxArr3(array);
 
 //-------
 // 4 вариант рекурсивно
 const array4 = [10, 12, 15, 21];
 
 const getIdxArr4 = (arr, idx = 0) => {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    return 'bad args';
-  }
+  isArrayArg(arr);
 
   if (idx < arr.length) {
     console.log(idx);
@@ -178,10 +174,11 @@ const getIdxArr4 = (arr, idx = 0) => {
   }
 };
 
-getIdxArr4(array4);
+getIdxArr4(array);
 
 // ---------------------------------------------------
 // 4) Прочитать про Top Level Await (можно ли использовать await вне функции async)
+// Нет await нельзя использовать на верхнем уровне вложенности (https://learn.javascript.ru/async-await) и вызовет ошибку.
 
 // ---------------------------------------------------
 // БОНУС ЗАДАНИЕ
@@ -192,3 +189,71 @@ getIdxArr4(array4);
 // .then(...)
 // .catch(...) // сatch должен сработать только после 5 неудачных попыток
 // получить содержимое страницы внутри fetchUrl
+
+// const url = 'https://google/com&#39';
+// const url = 'https://api.openweathermap.org/data/2.5/weather?q=saint petersburg&appid=ecbaa67ba7bece31be9e96bd8181180a';
+const url = ' https://reqres.in/';
+
+const handleResponse = (response) => {
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  } else {
+    console.log('Получен HTML вместо JSON');
+    return response.text();
+  }
+};
+
+//1 вариант
+
+const fetchUrl1 = (url) => {
+  let badResponseCount = 0;
+
+  const fetchData = () => {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          badResponseCount++;
+          if (badResponseCount >= 5) {
+            console.log('bad response');
+            throw new Error('bad response');
+          }
+          return fetchData();
+        } else {
+          return handleResponse(response);
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  fetchData();
+};
+
+//-------
+//2 вариант
+
+const fetchUrl2 = async (url) => {
+  let badResponseCount = 0;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      badResponseCount++;
+      if (badResponseCount >= 5) {
+        console.log('bad response');
+        return;
+      }
+      await fetchUrl2();
+    } else {
+      const data = await handleResponse(response);
+      console.log(data);
+    }
+  } catch (error) {
+    console.log('error=', error);
+  }
+};
