@@ -182,7 +182,8 @@ getIdxArr4(array);
 //  и вызовет ошибку.
 //  Но есть новая технология Top Level Await которая входит в стандарт ECMAScript
 //  начиная с версии ES2022 (ES13) и его поддержка может различаться
-//  в разных средах выполнения (Node.js, начиная с 14.3.0, поддерживает ).
+//  в разных средах выполнения (поддерживает: Node.js, начиная с 14.3.0,
+//  Webpack начиная с 5 версии).
 
 // Top Level Await(TLA) - это функциональность, которая позволяет использовать оператор
 // await вне функции async. Т е позволяет использовать оператор await на верхнем уровне
@@ -194,6 +195,38 @@ getIdxArr4(array);
 
 const result = await fetch('https://api.example.com/data');
 console.log(result);
+
+//чтоб включить нужно использовать флаг
+// --experimental - top - level - await при запуске среды выполнения Node.js т е
+
+// node --experimental-top-level-await MyAwait.js
+
+// и используется с оператором import, а не оператор require.
+// Top Level Await поддерживается в некоторых сборщиках JavaScript, таких как Webpack и Rollup
+
+// В Webpack, чтобы включить поддержку Top Level Await,
+// нужно установить плагин @babel/plugin-syntax-top-level-await
+// и добавить его в конфигурацию Babel.
+// пример конфигурации Babel для Webpack:
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-syntax-top-level-await'],
+          },
+        },
+      },
+    ],
+  },
+};
 
 // на can i use поддержка 93.98% (https://caniuse.com/mdn-javascript_operators_await_top_level)
 
